@@ -107,7 +107,7 @@ impl Lexer {
                     "title" => Token::KWTitle,
                     "description" => Token::KWDescription,
                     "object" => Token::KWObject,
-                    "property" => Token::KWProperty,
+                    "prop" => Token::KWProperty,
                     "route" => Token::KWRoute,
                     "body" => Token::KWBody,
                     "response" => Token::KWResponse,

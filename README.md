@@ -14,9 +14,9 @@ title "Sample API"
 description "This is a sample API specification."
 
 object User {
-    property id   string   "Unique identifier for the user"
-    property name string   "Name of the user"
-    property age  ?integer "Age of the user"
+    prop id   string   "Unique identifier for the user"
+    prop name string   "Name of the user"
+    prop age  ?integer "Age of the user"
 }
 
 route get "/users" {
@@ -66,7 +66,7 @@ Types can be marked as optional by prefixing them with `?`, e.g., `?string`.
 
 Objects are defined using the `object` keyword, followed by properties.
 
-Properties follow the format `property name type "description"`.
+Properties follow the format `prop name type "description"`.
 
 ### Routes
 

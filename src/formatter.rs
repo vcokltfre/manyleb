@@ -85,7 +85,7 @@ impl Formatable for Object {
         for field in &self.fields {
             let (name, field_type, description) = field.format();
             result.push_str(&format!(
-                "    property {:width_name$} {:width_type$} \"{}\"\n",
+                "    prop {:width_name$} {:width_type$} \"{}\"\n",
                 name,
                 field_type,
                 description,

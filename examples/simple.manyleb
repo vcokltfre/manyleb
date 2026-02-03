@@ -3,9 +3,9 @@ title "Sample API"
 description "This is a sample API specification."
 
 object User {
-    property id   string   "Unique identifier for the user"
-    property name string   "Name of the user"
-    property age  ?integer "Age of the user"
+    prop id   string   "Unique identifier for the user"
+    prop name string   "Name of the user"
+    prop age  ?integer "Age of the user"
 }
 
 route get "/users" {
