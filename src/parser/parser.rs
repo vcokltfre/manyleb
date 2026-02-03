@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::{
     Endpoint, Field, Object, Schema, Type,
     parser::{
@@ -248,13 +250,45 @@ impl Parser {
         })
     }
 
-    pub fn parse(&mut self) -> Result<Schema, String> {
+    fn parse_resolve(&mut self) -> Result<String, String> {
+        if let Some(token_context) = self.tokens.get(self.position) {
+            if let Token::String(s) = &token_context.token {
+                self.position += 1;
+                return Ok(s.clone());
+            }
+        }
+
+        Err(self.error_message("Expected string after '@' token."))
+    }
+
+    pub fn parse(&mut self, resolve: bool, visited: &mut HashSet<String>) -> Result<Schema, String> {
         let mut schema = Schema::new();
 
         while self.position < self.tokens.len() {
             let token = &self.tokens[self.position];
 
             match &token.token {
+                Token::Resolve => {
+                    self.position += 1;
+                    let resolve_path = self.parse_resolve()?;
+                    if !resolve {
+                        continue
+                    }
+
+                    if visited.contains(&resolve_path) {
+                        return Err(format!("Circular reference detected for '{}'", resolve_path));
+                    }
+
+                    visited.insert(resolve_path.clone());
+                    let resolved_input = std::fs::read_to_string(&resolve_path)
+                        .map_err(|e| format!("Failed to read file '{}': {}", resolve_path, e))?;
+                    let resolved_tokens = tokenise(&resolved_input)?;
+                    let mut resolved_parser = Parser::new(resolved_tokens);
+                    let resolved_schema = resolved_parser.parse(true, visited)?;
+
+                    schema.objects.extend(resolved_schema.objects);
+                    schema.endpoints.extend(resolved_schema.endpoints);
+                }
                 Token::KWVersion => {
                     if schema.version.is_some() {
                         return Err(self.error_message("Multiple version declarations found."));
@@ -338,6 +372,6 @@ impl Parser {
     }
 }
 
-pub fn parse(input: &str) -> Result<Schema, String> {
-    Parser::new(tokenise(input)?).parse()
+pub fn parse(input: &str, resolve: bool) -> Result<Schema, String> {
+    Parser::new(tokenise(input)?).parse(resolve, &mut HashSet::<String>::new())
 }

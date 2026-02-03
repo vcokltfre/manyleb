@@ -1,8 +1,9 @@
 use manyleb::{format as format_schema, parse};
 
+
 fn format(file: &String) -> Result<(), String> {
     let input = std::fs::read_to_string(file).unwrap();
-    let schema = parse(input.as_str())?;
+    let schema = parse(input.as_str(), false)?;
 
     let formatted = format_schema(&schema);
     std::fs::write(file, formatted).unwrap();
@@ -12,14 +13,14 @@ fn format(file: &String) -> Result<(), String> {
 
 fn verify(file: &String) -> Result<(), String> {
     let input = std::fs::read_to_string(file).unwrap();
-    let schema = parse(input.as_str())?;
+    let schema = parse(input.as_str(), true)?;
 
     schema.verify()
 }
 
 fn docs(input_file: &String, output_file: &String) -> Result<(), String> {
     let input = std::fs::read_to_string(input_file).unwrap();
-    let schema = parse(input.as_str())?;
+    let schema = parse(input.as_str(), true)?;
 
     let docs = manyleb::generate_docs(&schema);
     std::fs::write(output_file, docs).unwrap();

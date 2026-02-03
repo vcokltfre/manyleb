@@ -24,6 +24,8 @@ pub enum Token {
     MapEnd,
     Comma,
     QuestionMark,
+
+    Resolve,
 }
 
 #[derive(Debug, Clone)]

@@ -1,0 +1,3 @@
+object Example {
+    prop id   string   "Unique identifier for the example."
+}

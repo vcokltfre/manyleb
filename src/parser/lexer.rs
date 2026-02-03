@@ -187,6 +187,14 @@ impl Lexer {
                     column: self.column,
                 }))
             }
+            '@' => {
+                self.index += 1;
+                Ok(Some(TokenContext {
+                    token: Token::Resolve,
+                    line: self.line,
+                    column: self.column,
+                }))
+            }
             ' ' | '\t' | '\n' | '\r' => {
                 if char == '\n' {
                     self.line += 1;

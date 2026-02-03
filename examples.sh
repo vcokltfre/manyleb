@@ -1,6 +1,6 @@
 alias manyleb="cargo run --quiet"
 
-examples=( params simple users )
+examples=( params simple users parts )
 
 for example in "${examples[@]}"; do
     echo "Processing example: $example"
@@ -9,3 +9,5 @@ for example in "${examples[@]}"; do
     manyleb docs "examples/$example.manyleb" "examples/$example.md" || { echo "Documentation generation failed for $example"; exit 1; }
     echo "Successfully processed $example"
 done
+
+

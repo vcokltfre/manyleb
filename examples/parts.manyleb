@@ -1,0 +1,11 @@
+version "1.0.0"
+title "ManyLeb Part 2"
+description "This is part 2 of the ManyLeb examples, demonstrating reference resolution."
+
+route get "/" {
+    description "Retrieve the example object."
+
+    tag "example"
+
+    response 200 Example
+}
