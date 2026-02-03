@@ -1,0 +1,26 @@
+version "1.0.0"
+title "Sample API"
+description "This is a sample API specification."
+
+object User {
+    property id   string   "Unique identifier for the user"
+    property name string   "Name of the user"
+    property age  ?integer "Age of the user"
+}
+
+route get "/users" {
+    description "Retrieve a list of users"
+
+    tag "Users"
+
+    response 200 []User
+}
+
+route get "/users/:id" {
+    description "Retrieve a specific user by ID"
+
+    tag "Users"
+
+    response 200 User
+    response 404
+}

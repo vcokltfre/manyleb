@@ -1,0 +1,58 @@
+version "1.0.0"
+title "Sample Schema"
+description "This is a sample schema for demonstration purposes."
+
+object User {
+    property id         string "Unique identifier for the user."
+    property username   string "Username of the user."
+    property email      string "Email address of the user."
+    property created_at string "ISO8601 Timestamp of when the user was created."
+}
+
+object RegisterUserBody {
+    property username string "Desired username for the new user."
+    property email    string "Email address of the new user."
+    property password string "Password for the new user account."
+}
+
+object LoginUserBody {
+    property username string "Username of the user."
+    property password string "Password of the user."
+}
+
+object UserTokenResponse {
+    property token string "JWT authentication token."
+    property user  User   "Details of the registered user."
+}
+
+route post "/api/v1/users/register" {
+    description "Register a new user."
+
+    tag "users"
+
+    body RegisterUserBody
+
+    response 201 UserTokenResponse
+    response 400
+}
+
+route post "/api/v1/users/login" {
+    description "Authenticate a user and obtain a JWT token."
+
+    tag "users"
+
+    body LoginUserBody
+
+    response 200 UserTokenResponse
+    response 401
+}
+
+route get "/api/v1/users/{id}" {
+    description "Retrieve user details by user ID."
+
+    tag "authenticated"
+    tag "users"
+
+    response 200 User
+    response 404
+}
