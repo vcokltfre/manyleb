@@ -1,4 +1,4 @@
-use manyleb::{parse, format as format_schema};
+use manyleb::{format as format_schema, parse};
 
 fn format(file: &String) -> Result<(), String> {
     let input = std::fs::read_to_string(file).unwrap();
@@ -15,6 +15,16 @@ fn verify(file: &String) -> Result<(), String> {
     let schema = parse(input.as_str())?;
 
     schema.verify()
+}
+
+fn docs(input_file: &String, output_file: &String) -> Result<(), String> {
+    let input = std::fs::read_to_string(input_file).unwrap();
+    let schema = parse(input.as_str())?;
+
+    let docs = manyleb::generate_docs(&schema);
+    std::fs::write(output_file, docs).unwrap();
+
+    Ok(())
 }
 
 fn main() {
@@ -38,7 +48,7 @@ fn main() {
                 eprintln!("Error formatting file {}: {}", input_file, err);
                 std::process::exit(1);
             }
-        },
+        }
         "verify" => {
             if args.len() < 3 {
                 eprintln!("Usage: manyleb verify <input-file>");
@@ -51,6 +61,20 @@ fn main() {
                 std::process::exit(1);
             } else {
                 println!("Verification succeeded for file {}", input_file);
+            }
+        }
+        "docs" => {
+            if args.len() < 4 {
+                eprintln!("Usage: manyleb docs <input-file> <output-file>");
+                std::process::exit(1);
+            }
+
+            let input_file = &args[2];
+            let output_file = &args[3];
+
+            if let Err(err) = docs(input_file, output_file) {
+                eprintln!("Error generating docs from file {}: {}", input_file, err);
+                std::process::exit(1);
             }
         }
         _ => {
