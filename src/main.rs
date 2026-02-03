@@ -28,6 +28,16 @@ fn docs(input_file: &String, output_file: &String) -> Result<(), String> {
     Ok(())
 }
 
+fn summary(input_file: &String, output_file: &String) -> Result<(), String> {
+    let input = std::fs::read_to_string(input_file).unwrap();
+    let schema = parse(input.as_str(), true)?;
+
+    let summary = manyleb::generate_summary(&schema);
+    std::fs::write(output_file, summary).unwrap();
+
+    Ok(())
+}
+
 fn main() {
     let args = std::env::args().collect::<Vec<String>>();
     if args.len() < 1 {
@@ -75,6 +85,20 @@ fn main() {
 
             if let Err(err) = docs(input_file, output_file) {
                 eprintln!("Error generating docs from file {}: {}", input_file, err);
+                std::process::exit(1);
+            }
+        }
+        "summary" => {
+            if args.len() < 4 {
+                eprintln!("Usage: manyleb summary <input-file> <output-file>");
+                std::process::exit(1);
+            }
+
+            let input_file = &args[2];
+            let output_file = &args[3];
+
+            if let Err(err) = summary(input_file, output_file) {
+                eprintln!("Error generating summary from file {}: {}", input_file, err);
                 std::process::exit(1);
             }
         }

@@ -194,6 +194,10 @@ impl Formatable for Schema {
             result.push('\n');
         }
 
+        while result.starts_with("\n") {
+            result.remove(0);
+        }
+
         if result.ends_with("\n\n") {
             result.pop();
         }

@@ -103,3 +103,25 @@ pub fn generate_docs(schema: &Schema) -> String {
     }
     docs
 }
+
+pub fn generate_summary(schema: &Schema) -> String {
+    let mut summary = String::new();
+
+    summary.push_str("# Summary\n\n## Objects\n\n");
+
+    for object in &schema.objects {
+        summary.push_str(&format!("- `{}`\n", object.id));
+    }
+
+    summary.push_str("\n## Endpoints\n\n");
+
+    for endpoint in &schema.endpoints {
+        summary.push_str(&format!(
+            "- `{} {}`\n",
+            endpoint.method.to_uppercase(),
+            endpoint.path,
+        ));
+    }
+
+    summary
+}

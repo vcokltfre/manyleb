@@ -1,6 +1,6 @@
 [package]
 name = "manyleb"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2024"
 authors = ["vcokltfre <vcokltfre@gmail.com>"]
 description = "Manyleb (Welsh for 'specification') is a DSL designed for specifying HTTP APIs in a concise but precise manner."
