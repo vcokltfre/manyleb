@@ -108,6 +108,14 @@ To verify a Manyleb specification file for correctness, use the following comman
 manyleb verify path/to/spec.manyleb
 ```
 
+### Docs Command
+
+To generate documentation from a Manyleb specification file, use the following command:
+
+```bash
+manyleb docs path/to/spec.manyleb path/to/output.md
+```
+
 ## License
 
 Manyleb is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
