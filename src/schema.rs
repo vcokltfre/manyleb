@@ -32,6 +32,8 @@ pub struct Endpoint {
     pub path: String,
     pub description: Option<String>,
     pub tags: Vec<String>,
+    pub params: Vec<Field>,
+    pub query: Vec<Field>,
     pub request_body: Option<Type>,
     pub responses: Vec<(u16, Option<Type>)>,
 }
@@ -104,6 +106,39 @@ impl Schema {
         }
 
         for endpoint in &self.endpoints {
+            for param in &endpoint.params {
+                match &param.field_type {
+                    Type::String | Type::Integer | Type::Float | Type::Boolean  => {}
+                    _ => {
+                        return Err(format!(
+                            "Invalid type for parameter '{}' in endpoint '{}'. Only primitive types are allowed.",
+                            param.name, endpoint.id
+                        ));
+                    }
+                }
+            }
+
+            for query in &endpoint.query {
+                match &query.field_type {
+                    Type::String | Type::Integer | Type::Float | Type::Boolean  => {}
+                    Type::Optional(t) => match t.as_ref() {
+                        Type::String | Type::Integer | Type::Float | Type::Boolean  => {}
+                        _ => {
+                            return Err(format!(
+                                "Invalid type for query parameter '{}' in endpoint '{}'. Only primitive types are allowed.",
+                                query.name, endpoint.id
+                            ));
+                        }
+                    },
+                    _ => {
+                        return Err(format!(
+                            "Invalid type for query parameter '{}' in endpoint '{}'. Only primitive types are allowed.",
+                            query.name, endpoint.id
+                        ));
+                    }
+                }
+            }
+
             if let Some(body_type) = &endpoint.request_body {
                 if let Type::Reference(ref_name) = body_type {
                     if !objects.contains(ref_name) {

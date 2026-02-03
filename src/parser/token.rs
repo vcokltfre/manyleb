@@ -9,6 +9,8 @@ pub enum Token {
     KWBody,
     KWResponse,
     KWTag,
+    KWParam,
+    KWQuery,
 
     Identifier(String),
     String(String),

@@ -72,7 +72,7 @@ Properties follow the format `property name type "description"`.
 
 Routes are defined using the `route` keyword, followed by the HTTP method and path.
 
-Routes can have descriptions, tags, and multiple responses.
+Routes can have descriptions, tags, params, query params, and multiple responses.
 
 Routes follow the format:
 
@@ -81,6 +81,10 @@ route method "/path" {
     description "Route description"
 
     tag "TagName"
+
+    param name type "description"
+
+    query name type "description"
 
     response status_code type
 }

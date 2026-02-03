@@ -1,0 +1,15 @@
+version "1.0.0"
+title "Sample API"
+description "This is a sample API specification."
+
+route get "/:id" {
+    description "Get by ID"
+
+    tag "Users"
+
+    param id string "The ID of the user"
+
+    query verbose ?boolean "Whether to include verbose details"
+
+    response 200 []User
+}

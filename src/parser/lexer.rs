@@ -112,6 +112,8 @@ impl Lexer {
                     "body" => Token::KWBody,
                     "response" => Token::KWResponse,
                     "tag" => Token::KWTag,
+                    "param" => Token::KWParam,
+                    "query" => Token::KWQuery,
                     _ => Token::Identifier(ident_value.to_string()),
                 };
 

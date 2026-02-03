@@ -115,6 +115,32 @@ impl Formatable for Endpoint {
             result.push('\n');
         }
 
+        for param in &self.params {
+            let (name, field_type, description) = param.format();
+            result.push_str(&format!(
+                "    param {} {} \"{}\"\n",
+                name,
+                field_type,
+                escape_string(&description)
+            ));
+        }
+        if self.params.len() > 0 {
+            result.push('\n');
+        }
+
+        for query in &self.query {
+            let (name, field_type, description) = query.format();
+            result.push_str(&format!(
+                "    query {} {} \"{}\"\n",
+                name,
+                field_type,
+                escape_string(&description)
+            ));
+        }
+        if self.query.len() > 0 {
+            result.push('\n');
+        }
+
         if let Some(body_type) = &self.request_body {
             result.push_str(&format!(
                 "    body {}\n",

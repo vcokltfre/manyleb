@@ -1,6 +1,9 @@
 use crate::{
-    Schema, Type, Field, Object, Endpoint,
-    parser::{lexer::tokenise, token::{Token, TokenContext}},
+    Endpoint, Field, Object, Schema, Type,
+    parser::{
+        lexer::tokenise,
+        token::{Token, TokenContext},
+    },
 };
 
 struct Parser {
@@ -83,17 +86,15 @@ impl Parser {
 
         if let Some(token_context) = self.tokens.get(self.position - 1) {
             match &token_context.token {
-                Token::Identifier(type_name) => {
-                    match type_name.as_str() {
-                        "any" => return Ok(Type::Any),
-                        "null" => return Ok(Type::Null),
-                        "string" | "str" => return Ok(Type::String),
-                        "integer" | "int"  => return Ok(Type::Integer),
-                        "float" => return Ok(Type::Float),
-                        "boolean" | "bool" => return Ok(Type::Boolean),
-                        _ => return Ok(Type::Reference(type_name.clone())),
-                    }
-                }
+                Token::Identifier(type_name) => match type_name.as_str() {
+                    "any" => return Ok(Type::Any),
+                    "null" => return Ok(Type::Null),
+                    "string" | "str" => return Ok(Type::String),
+                    "integer" | "int" => return Ok(Type::Integer),
+                    "float" => return Ok(Type::Float),
+                    "boolean" | "bool" => return Ok(Type::Boolean),
+                    _ => return Ok(Type::Reference(type_name.clone())),
+                },
                 Token::ArayStart => {
                     self.expect_keyword(Token::ArayEnd)?;
                     let item_type = self.expect_type()?;
@@ -119,9 +120,7 @@ impl Parser {
         Err(self.error_message("Expected type."))
     }
 
-    fn parse_property(&mut self) -> Result<Field, String> {
-        self.expect_keyword(Token::KWProperty)?;
-
+    fn expect_property(&mut self) -> Result<Field, String> {
         let name = self.expect_identifier()?;
         let field_type = self.expect_type()?;
         let description = self.expect_string()?;
@@ -142,7 +141,8 @@ impl Parser {
         while let Some(token) = self.tokens.get(self.position) {
             match &token.token {
                 Token::KWProperty => {
-                    let field = self.parse_property()?;
+                    self.position += 1;
+                    let field = self.expect_property()?;
                     fields.push(field);
                 }
                 Token::BlockEnd => {
@@ -150,15 +150,14 @@ impl Parser {
                     break;
                 }
                 _ => {
-                    return Err(self.error_message(format!("Unexpected token in object: {:?}", token.token).as_str()));
+                    return Err(self.error_message(
+                        format!("Unexpected token in object: {:?}", token.token).as_str(),
+                    ));
                 }
             }
         }
 
-        Ok(Object {
-            id,
-            fields,
-        })
+        Ok(Object { id, fields })
     }
 
     fn parse_route(&mut self) -> Result<Endpoint, String> {
@@ -169,6 +168,8 @@ impl Parser {
 
         let mut description = None;
         let mut tags = Vec::new();
+        let mut params = Vec::new();
+        let mut query = Vec::new();
         let mut body = None;
         let mut responses = Vec::new();
 
@@ -188,6 +189,16 @@ impl Parser {
                     let body_type = self.expect_type()?;
                     body = Some(body_type);
                 }
+                Token::KWParam => {
+                    self.position += 1;
+                    let param = self.expect_property()?;
+                    params.push(param);
+                }
+                Token::KWQuery => {
+                    self.position += 1;
+                    let query_param = self.expect_property()?;
+                    query.push(query_param);
+                }
                 Token::KWResponse => {
                     self.position += 1;
                     if let Some(status_token) = self.tokens.get(self.position) {
@@ -205,7 +216,8 @@ impl Parser {
 
                             responses.push((status_code as u16, None));
                         } else {
-                            return Err(self.error_message("Expected integer status code after 'response'."));
+                            return Err(self
+                                .error_message("Expected integer status code after 'response'."));
                         }
                     } else {
                         return Err(self.error_message("Unexpected end of input after 'response'."));
@@ -216,7 +228,9 @@ impl Parser {
                     break;
                 }
                 _ => {
-                    return Err(self.error_message(format!("Unexpected token in route: {:?}", token.token).as_str()));
+                    return Err(self.error_message(
+                        format!("Unexpected token in route: {:?}", token.token).as_str(),
+                    ));
                 }
             }
         }
@@ -227,6 +241,8 @@ impl Parser {
             path,
             description,
             tags,
+            params,
+            query,
             request_body: body,
             responses,
         })
@@ -250,10 +266,14 @@ impl Parser {
                             schema.version = Some(version.clone());
                             self.position += 1;
                         } else {
-                            return Err(self.error_message("Expected string after 'version' keyword."));
+                            return Err(
+                                self.error_message("Expected string after 'version' keyword.")
+                            );
                         }
                     } else {
-                        return Err(self.error_message("Unexpected end of input after 'version' keyword.")); 
+                        return Err(
+                            self.error_message("Unexpected end of input after 'version' keyword.")
+                        );
                     }
                 }
                 Token::KWTitle => {
@@ -267,10 +287,14 @@ impl Parser {
                             schema.title = Some(title.clone());
                             self.position += 1;
                         } else {
-                            return Err(self.error_message("Expected string after 'title' keyword."));
+                            return Err(
+                                self.error_message("Expected string after 'title' keyword.")
+                            );
                         }
                     } else {
-                        return Err(self.error_message("Unexpected end of input after 'title' keyword.")); 
+                        return Err(
+                            self.error_message("Unexpected end of input after 'title' keyword.")
+                        );
                     }
                 }
                 Token::KWDescription => {
@@ -284,10 +308,14 @@ impl Parser {
                             schema.description = Some(description.clone());
                             self.position += 1;
                         } else {
-                            return Err(self.error_message("Expected string after 'description' keyword."));
+                            return Err(
+                                self.error_message("Expected string after 'description' keyword.")
+                            );
                         }
                     } else {
-                        return Err(self.error_message("Unexpected end of input after 'description' keyword."));
+                        return Err(self.error_message(
+                            "Unexpected end of input after 'description' keyword.",
+                        ));
                     }
                 }
                 Token::KWObject => {
