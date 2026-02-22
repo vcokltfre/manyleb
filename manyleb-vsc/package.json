@@ -1,0 +1,50 @@
+{
+  "name": "manyleb",
+  "displayName": "Manyleb",
+  "description": "vcokltfre/manyleb syntax support",
+  "version": "1.0.0",
+  "license": "MIT",
+  "repository": "https://github.com/vcokltfre/manyleb",
+  "engines": {
+    "vscode": "^1.84.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Formatters"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:manyleb"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "manyleb",
+        "aliases": [
+          "manyleb"
+        ],
+        "extensions": [
+          ".manyleb"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "manyleb",
+        "scopeName": "source.manyleb",
+        "path": "./syntaxes/manyleb.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.84.0",
+    "typescript": "^5.3.0"
+  }
+}

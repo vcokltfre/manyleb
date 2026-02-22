@@ -116,6 +116,12 @@ To generate documentation from a Manyleb specification file, use the following c
 manyleb docs path/to/spec.manyleb path/to/output.md
 ```
 
+## VS Code Extension
+
+The Manyleb VS Code extension provides syntax highlighting and formatting support for Manyleb specification files. It automatically formats the file on save using the `manyleb format` command.
+
+To install the extension, you will need `vsce` installed globally, and can then run `sh ./install-ext.sh` in this repository to build and install the extension. You will need `manyleb` installed and available in your PATH for the formatting to work.
+
 ## License
 
 Manyleb is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
