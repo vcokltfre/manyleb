@@ -30,7 +30,7 @@
       "patterns": [
         {
           "name": "keyword.control.manyleb",
-          "match": "\\b(version|title|description|object|prop|route|body|response|tag)\\b"
+          "match": "\\b(version|title|description|object|prop|route|body|response|tag|param|query)\\b"
         }
       ]
     },
@@ -39,7 +39,7 @@
       "patterns": [
         {
           "name": "keyword.other.http.manyleb",
-          "match": "\\b(get|post|put|patch|delete)\\b"
+          "match": "\\b(get|post|put|patch|delete|options|head)\\b"
         }
       ]
     },
@@ -73,7 +73,7 @@
       "patterns": [
         {
           "name": "storage.type.primitive.manyleb",
-          "match": "\\b(string|integer|boolean|float)\\b"
+          "match": "\\b(string|str|integer|int|boolean|bool|float|null)\\b"
         },
         {
           "name": "entity.name.type.manyleb",
